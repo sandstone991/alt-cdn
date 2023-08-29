@@ -1,2 +1,2 @@
 # alt-cdn
-A chrome extension to replace a certain CDN/s with another.
+Experiencing a situation where your country inexplicably blocks certain content delivery networks, like jsDelivr, can be quite frustrating. This leads to numerous broken websites due to missing essential JavaScript files. This extension provides an alternative to using a VPN. It simply asks for a list of preferred providers (usually just one for most people) and automatically replaces the blocked content with suitable alternatives.
