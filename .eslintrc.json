@@ -1,8 +1,15 @@
 {
 	"extends": [
-		"@abhijithvijayan/eslint-config/typescript",
-		"@abhijithvijayan/eslint-config/node",
-		"@abhijithvijayan/eslint-config/react"
+		"eslint:recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+		"plugin:node/recommended",
+		"plugin:prettier/recommended",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended"
+	],
+	"plugins": [
+		"jsx-a11y"
 	],
 	"parserOptions": {
 		"project": [
@@ -19,16 +26,23 @@
 		"max-classes-per-file": "off",
 		"node/no-missing-import": "off",
 		"node/no-unpublished-import": "off",
-		"node/no-unsupported-features/es-syntax": ["error", {
-			"ignores": ["modules"]
-		}]
+		"node/no-unsupported-features/es-syntax": [
+			"error",
+			{
+				"ignores": [
+					"modules"
+				]
+			}
+		]
 	},
 	"env": {
 		"webextensions": true
 	},
 	"settings": {
 		"node": {
-			"tryExtensions": [".tsx"] // append tsx to the list as well
+			"tryExtensions": [
+				".tsx"
+			] // append tsx to the list as well
 		}
 	}
 }
