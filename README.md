@@ -4,6 +4,12 @@ Experiencing a situation where your country inexplicably blocks certain content 
 
 ## Installation
 
+- from releases download the package to your browser `chrome.zip`, `firefox.xpi` or `opera.crx`
+
+- in chrome goto `chrome://extensions/` and enable developer mode, then drag drop the `chrome.zip` file
+
+- if you want to load from source check [Contributing](#contributing)
+
 ## Contributing
 
 - make sure you have node.js v14 `nvm use 14`
