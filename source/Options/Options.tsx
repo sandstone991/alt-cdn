@@ -12,10 +12,10 @@ const Options: React.FC = () => {
     const errorMessageTimeout = React.useRef<number | null>(null);
     React.useEffect(() => {
         async function getNotWorkingProviders() {
-            let blockedProivders = (
+            const blockedProivders = (
                 await Promise.all(
                     Object.keys(providers).map(async (provider) => {
-                        let res = await browser.storage.local.get(provider);
+                        const res = await browser.storage.local.get(provider);
                         if (res[provider]) {
                             return {
                                 provider,
@@ -32,7 +32,7 @@ const Options: React.FC = () => {
             );
         }
         async function getBlockedProviders() {
-            let blockedProivders = await browser.storage.local.get(
+            const blockedProivders = await browser.storage.local.get(
                 'blockedProivders',
             );
             setBlockedProviders(blockedProivders['blockedProivders'] || []);
@@ -43,8 +43,8 @@ const Options: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let formData = new FormData(e.currentTarget);
-        let blockedProivders = Object.keys(providers).filter(
+        const formData = new FormData(e.currentTarget);
+        const blockedProivders = Object.keys(providers).filter(
             (provider) => !formData.getAll('provider').includes(provider),
         );
         browser.storage.local.set({ blockedProivders });
@@ -183,11 +183,12 @@ const Options: React.FC = () => {
                     </h2>
                     <div className="text-gray-500 text-sm">
                         <p>
-                            Allowed CDNs won't be rerouted even if they're
-                            blocked or don't work for you
+                            Allowed CDNs won&apos;t be rerouted even if
+                            they&apos;re blocked or don&apos;t work for you
                         </p>
                         <p>
-                            You'll have to deselect undesired providers manually
+                            You&apos;ll have to deselect undesired providers
+                            manually
                         </p>
                         <div className="flex flex-col gap-4">
                             <FormBody />
