@@ -1,22 +1,23 @@
 import 'emoji-log';
 import {browser} from 'webextension-polyfill-ts';
-
-const providers = {
-  jsdelivr: 'https://cdn.jsdelivr.net/npm/',
-  unpkg: 'https://unpkg.com/',
-  cdnjs: 'https://cdnjs.cloudflare.com/ajax/libs/',
-  github: 'https://raw.githubusercontent.com/',
-};
+import {providers} from '../Constants';
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🦄', 'extension installed');
 });
+let blockedProvidersSynced:string[] = [];
+
+// sync object on startup and install
+browser.storage.local.get("blockedProivders").then((result)=>{
+  blockedProvidersSynced = result["blockedProivders"] || [];
+}
+)
 
 browser.webRequest.onErrorOccurred.addListener(
   (details) => {
     if (details.error === 'net::ERR_BLOCKED_BY_CLIENT') return;
     Object.keys(providers).forEach((provider) => {
       if (details.url.search(provider) !== -1) {
-        browser.storage.local.get([provider]).then((result) => {
+        browser.storage.local.get(provider).then((result) => {
           if (result[provider] === undefined) {
             result[provider] = 0;
           }
@@ -31,21 +32,67 @@ browser.webRequest.onErrorOccurred.addListener(
 );
 
 browser.storage.onChanged.addListener((changes) => {
-  for (const [key, {newValue}] of Object.entries(changes)) {
-    if (key in providers && newValue >= 3) {
-      // user has a problem with this provider
-      // notify the user to change the provider
-      browser.notifications.create({
-        type: 'basic',
-        iconUrl: browser.runtime.getURL('assets/icons/favicon-128.png'),
-        title: 'Provider Error',
-        message: `You have a problem with ${key} provider, please change it from the options page`,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      });
-    }
-  }
+  browser.storage.local.get('lastNotification').then((result) => {
+    const lastNotification = result.lastNotification;
+    const now = Date.now();
+    if (lastNotification && now - lastNotification <= 1000 * 60 * 60) return;
+    for (const [key, {newValue}] of Object.entries(changes)) {
+      if (key in providers && newValue >= 3) {
+          browser.notifications.clear('provider-error');
+          browser.notifications.create('provider-error', {
+            type: 'basic',
+            iconUrl: browser.runtime.getURL('assets/icons/favicon-128.png'),
+            title: 'Provider Error',
+            message: `You have a problem with ${key} provider, please change it from the options page`,
+          });
+          browser.storage.local.set({lastNotification: now});
+        }
+        if(key === "blockedProivders"){
+          //sync object
+          browser.storage.local.get("blockedProivders").then((result)=>{
+            blockedProvidersSynced = result["blockedProivders"];
+          }
+          )
+        }
+      }
+    })
+});
+browser.notifications.onClicked.addListener((id) => {
+  if(id==="provider-error")browser.runtime.openOptionsPage();
 });
 
-browser.notifications.onClicked.addListener(() => {
-  browser.runtime.openOptionsPage();
-});
+
+browser.webRequest.onBeforeRequest.addListener(
+  (details) => {
+    // check if the url is blocked
+    console.log(blockedProvidersSynced)
+
+    if (blockedProvidersSynced.length === 0) return;
+    console.log("1")
+    for (const provider of blockedProvidersSynced) {
+      if (details.url.search(provider) === -1) continue;
+      const replacement: (keyof typeof providers | undefined)= Object.keys(providers).find((provider) => {
+        return blockedProvidersSynced.indexOf(provider) === -1;}
+      ) as keyof typeof providers | undefined;
+      if (replacement === undefined) return;
+        // ex: found https://cdn.jsdelivr.net/npm/package@version/file
+        // extract package, version and file
+        const url = new URL(details.url);
+        let newUrl = "";
+        if(url.hostname.search("jsdelivr") !== -1){
+            let path = url.pathname.split("/");
+            let rest = path[2];
+            newUrl = `${providers[replacement]}${rest}`
+        };
+        //find a replacement that is not blocked
+        //replace the url
+
+        console.log(newUrl);
+        return {redirectUrl: newUrl};
+      }
+    return;
+    },
+
+  {urls: ['<all_urls>'], types: ['script']},
+  ['blocking']
+);
