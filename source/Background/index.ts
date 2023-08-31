@@ -81,13 +81,14 @@ browser.webRequest.onBeforeRequest.addListener(
         let newUrl = "";
         if(url.hostname.search("jsdelivr") !== -1){
             let path = url.pathname.split("/");
-            let rest = path[2];
-            newUrl = `${providers[replacement]}${rest}`
+            let rest = path.slice(2).join("/");
+            newUrl = `${"https://cdn.jsdelivr.xyz/npm/"}${rest}`
         };
-        //find a replacement that is not blocked
-        //replace the url
-
-        console.log(newUrl);
+        if(url.hostname.search("unpkg") !== -1){
+            let path = url.pathname.split("/");
+            let rest = path.slice(2).join("/");
+            newUrl = `${replacement}${rest}`
+        };
         return {redirectUrl: newUrl};
       }
     return;
