@@ -35,9 +35,11 @@ browser.storage.onChanged.addListener((changes) => {
   browser.storage.local.get('lastNotification').then((result) => {
     const lastNotification = result.lastNotification;
     const now = Date.now();
-    if (lastNotification && now - lastNotification <= 1000 * 60 * 60) return;
+  
     for (const [key, {newValue}] of Object.entries(changes)) {
       if (key in providers && newValue >= 3) {
+        console.log("here", lastNotification)
+        if (lastNotification && now - lastNotification <= 1000 * 60 * 60) continue;
           browser.notifications.clear('provider-error');
           browser.notifications.create('provider-error', {
             type: 'basic',
@@ -64,11 +66,10 @@ browser.notifications.onClicked.addListener((id) => {
 
 browser.webRequest.onBeforeRequest.addListener(
   (details) => {
-    // check if the url is blocked
-    console.log(blockedProvidersSynced)
+
 
     if (blockedProvidersSynced.length === 0) return;
-    console.log("1")
+
     for (const provider of blockedProvidersSynced) {
       if (details.url.search(provider) === -1) continue;
       const replacement: (keyof typeof providers | undefined)= Object.keys(providers).find((provider) => {
