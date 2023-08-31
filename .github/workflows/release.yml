@@ -1,0 +1,40 @@
+name: 'Build And Create New Release'
+
+on:
+    push:
+        branches:
+            - main
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install NodeJs v14
+              uses: actions/setup-node@v3
+              with:
+                  # Version Spec of the version to use in SemVer notation.
+                  # It also emits such aliases as lts, latest, nightly and canary builds
+                  # Examples: 12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node
+                  node-version: '14.x'
+
+            - name: Run Install
+              uses: borales/actions-yarn@v4
+              with:
+                  cmd: install
+            - name: Build production bundle
+              uses: borales/actions-yarn@v4
+              with:
+                  cmd: build # will run `yarn build` command
+
+            - name: Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  files: |
+                      extension/chrome.zip
+                      extension/firefox.xpi
+                      extension/opera.crx
