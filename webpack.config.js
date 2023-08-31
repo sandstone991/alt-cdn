@@ -74,7 +74,11 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       'webextension-polyfill-ts': path.resolve(
-        path.join(__dirname, 'node_modules', 'webextension-polyfill-ts')
+        path.join(
+          __dirname,
+          'node_modules',
+          'webextension-polyfill-ts',
+        ),
       ),
     },
   },
@@ -127,7 +131,6 @@ module.exports = {
             },
           },
           'resolve-url-loader', // Rewrites relative paths in url() statements
-
         ],
       },
     ],
@@ -147,7 +150,9 @@ module.exports = {
         path.join(process.cwd(), `extension/${targetBrowser}`),
         path.join(
           process.cwd(),
-          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
+          `extension/${targetBrowser}.${getExtensionFileType(
+            targetBrowser,
+          )}`,
         ),
       ],
       cleanStaleWebpackAssets: false,
@@ -191,7 +196,10 @@ module.exports = {
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorPluginOptions: {
-          preset: ['default', { discardComments: { removeAll: true } }],
+          preset: [
+            'default',
+            { discardComments: { removeAll: true } },
+          ],
         },
       }),
       new FilemanagerPlugin({
@@ -201,7 +209,10 @@ module.exports = {
               {
                 format: 'zip',
                 source: path.join(destPath, targetBrowser),
-                destination: `${path.join(destPath, targetBrowser)}.${getExtensionFileType(targetBrowser)}`,
+                destination: `${path.join(
+                  destPath,
+                  targetBrowser,
+                )}.${getExtensionFileType(targetBrowser)}`,
                 options: { zlib: { level: 6 } },
               },
             ],
