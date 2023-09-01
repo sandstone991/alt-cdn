@@ -4,24 +4,24 @@ Experiencing a situation where your country inexplicably blocks certain content 
 
 ## Installation
 
-- from releases download the package to your browser `chrome.zip`, `firefox.xpi` or `opera.crx`
+- From [releases](https://github.com/sandstone991/alt-cdn/releases) download the package to your browser `chrome.zip`, `firefox.xpi` or `opera.crx`
 
-- in chrome goto `chrome://extensions/` and enable developer mode, then drag drop the `chrome.zip` file
+- In chrome go to `chrome://extensions/` and enable developer mode, then drag drop the `chrome.zip` file.
 
-- if you want to load from source check [Contributing](#contributing)
+- If you want to load from source check [Contributing](#contributing)
 
 ## Contributing
 
-- make sure you have node.js v14 `nvm use 14`
+- Make sure you have node.js v14 `nvm use 14`
 
-- install yarn `npm i -g yarn`
+- Install yarn `npm i -g yarn`
 
-- install `yarn install`
+- Install `yarn install`
 
-- run dev command for your browser `yarn dev:chome` or `yarn dev:firefox` or `yarn dev:opera`
+- Run dev command for your browser `yarn dev:chome` or `yarn dev:firefox` or `yarn dev:opera`
 
-- add the extension to your browser
+- Add the extension to your browser
   - In Chrome/Edge 
-        1. go to the extensions page (`chrome://extensions` or `edge://extensions`).
+        1. Go to the extensions page (`chrome://extensions` or `edge://extensions`).
         2. Enable Developer Mode.
-        3. click `load unpacked` then select `$your-project-path/extension/chrome`
+        3. Click `load unpacked` then select `$your-project-path/extension/chrome`
